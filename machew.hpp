@@ -79,11 +79,11 @@ template<uint8_t pin> inline int digitalRead()
     return LOW;
 }
 
-template<uint8_t pin> inline void digitalWrite(boolean val) {
+template<uint8_t pin> inline void digitalWriteI(boolean val) {
     constexpr uint8_t timer = _digitalPinToTimer(pin);
     constexpr uint8_t bit = _digitalPinToBitMask(pin);
     constexpr uint8_t port = _digitalPinToPort(pin);
-    volatile uint8_t *out = _portOutputRegister(port);
+    constexpr volatile uint8_t *out = _portOutputRegister(port);
 
     if (port == NOT_A_PIN) return;
 
@@ -91,29 +91,28 @@ template<uint8_t pin> inline void digitalWrite(boolean val) {
     // before doing a digital write.
     if (timer != NOT_ON_TIMER) turnOffPWM<timer>();
 
-    uint8_t oldSREG = SREG;
-    cli();
-
     if (val == LOW) {
         *out &= ~bit;
     } else {
         *out |= bit;
     }
+}
 
+template<uint8_t pin> inline void digitalWrite(boolean val) {
+    uint8_t oldSREG = SREG;
+    cli();
+    digitalWriteI<pin>(val);
     SREG = oldSREG;
 }
 
-template <uint8_t pin, uint8_t mode> void pinMode()
+template <uint8_t pin, uint8_t mode> void pinModeI()
 {
     constexpr uint8_t bit = _digitalPinToBitMask(pin);
     constexpr uint8_t port = _digitalPinToPort(pin);
-    volatile uint8_t *reg = _portModeRegister(port);
-    volatile uint8_t *out = _portOutputRegister(port);
+    constexpr volatile uint8_t *reg = _portModeRegister(port);
+    constexpr volatile uint8_t *out = _portOutputRegister(port);
 
     if (port == NOT_A_PIN) return;
-
-    uint8_t oldSREG = SREG;
-    cli();
 
     switch(mode) {
     case INPUT:
@@ -128,7 +127,13 @@ template <uint8_t pin, uint8_t mode> void pinMode()
         *reg |= bit;
         break;
     }
+}
 
+template <uint8_t pin, uint8_t mode> void pinMode()
+{
+    uint8_t oldSREG = SREG;
+    cli();
+    pinModeI<pin, mode>();
     SREG = oldSREG;
 }
 
