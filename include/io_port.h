@@ -128,7 +128,7 @@ namespace machew {
             /**
              * Set the mode for a given group of pins
              */
-            [[gnu::always_inline]] inline const pin_group& operator= (const pin_mode& mode) const {
+            inline const pin_group& operator= (const pin_mode& mode) const {
                 constexpr uint8_t x = get_pin_mask<pins...>();
 
                 // the if constexpr exists to avoid an unnecessary read
@@ -204,4 +204,4 @@ namespace machew {
             }
         };
     };
-};
+}

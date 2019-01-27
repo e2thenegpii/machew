@@ -28,7 +28,7 @@ namespace machew {
             return address;
         }
     };
-};
+}
 
 #if defined(__AVR_ATmega328__)
 #include "devices/atmega328.h"

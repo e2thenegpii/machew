@@ -6,4 +6,4 @@ namespace machew::power {
         enabled,
         disabled
     };
-};
+}

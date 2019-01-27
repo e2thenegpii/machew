@@ -27,8 +27,16 @@
 *.exe
 *.out
 *.app
+*.hex
+*.lst
+*.map
+*.elf
 
 *.swp
+
+# specific assembly files
+main.s
+
 CMakeCache.txt
 CMakeFiles/
 Makefile

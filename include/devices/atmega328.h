@@ -123,6 +123,11 @@ namespace machew {
     
         template <port... ports> struct pcicr_t;
         template <port... ports> struct pcifr_t;
+        struct spcr_t;
+        struct spsr_t;
+        struct admux_t;
+        struct adcsra_t;
+        struct adcsrb_t;
     };
 
     using port = device<>::port;    
@@ -254,4 +259,4 @@ namespace machew {
             }
         }
     };
-};
+}

@@ -6,5 +6,5 @@ namespace machew {
             enabled,
             disabled
         };
-    };
-};
+    }
+}

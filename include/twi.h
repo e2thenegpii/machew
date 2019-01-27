@@ -76,4 +76,4 @@ namespace machew {
             return *((volatile uint8_t*)device<>::twcr) & (1<<TWINT);
         }
     };
-};
+}

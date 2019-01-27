@@ -27,4 +27,4 @@ namespace machew {
     private:
         value_type value;
     };
-};
+}

@@ -95,4 +95,4 @@ namespace machew {
             return read_async();
         }
     };
-};
+}

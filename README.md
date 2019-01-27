@@ -8,8 +8,11 @@ to assembly that is as fast as one could write using straight C and a lot of
 bit twiddling.
 
 ## Supported Devices (or to support soon):
-* [ATTiny26](http://ww1.microchip.com/downloads/en/DeviceDoc/doc1477.pdf)
-* [ATTiny28](http://ww1.microchip.com/downloads/en/DeviceDoc/doc1062.pdf)
+* [ATTiny25]()
+* [ATTiny45]()
+* [ATTiny85]()
+* [ATMega168]()
+* [ATMega8]()
 * [ATMega328P](http://ww1.microchip.com/downloads/en/DeviceDoc/ATmega328_P%20AVR%20MCU%20with%20picoPower%20Technology%20Data%20Sheet%2040001984A.pdf)
 * [ATMega640](http://ww1.microchip.com/downloads/en/DeviceDoc/Atmel-2549-8-bit-AVR-Microcontroller-ATmega640-1280-1281-2560-2561_datasheet.pdf)
 * [ATMega1280](http://ww1.microchip.com/downloads/en/DeviceDoc/Atmel-2549-8-bit-AVR-Microcontroller-ATmega640-1280-1281-2560-2561_datasheet.pdf)
@@ -41,7 +44,7 @@ Support for the C++ stdlib will be from my fork of [StandardCplusplus](https://g
 
 ## To Use:
 Use CMake
-
 ```
-git clone git@github.com:e2thenegpii/machew.git
-cmake -build-toolchain=ON .
+git clone --recursive git@github.com:e2thenegpii/machew.git
+cmake -DAVR\_MCU=atmega328 -build-toolchain=ON .
+```

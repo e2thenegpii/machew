@@ -1,6 +1,6 @@
 #pragma once
 #include <avr/io.h>
-#include <EASTL/type_traits.h>
+#include <type_traits>
 #include "architecture.h"
 #include "interrupts.h"
 #include "power.h"
@@ -118,14 +118,9 @@ namespace machew {
             return read_async();
         }
 
-        void start() const {
-            register_write_back<uint8_t, device<>::adcsra> reg;
-            reg |= (1<<ADSC);
-        }
+        void start() const;
 
-        bool read_ready() const {
-            return *((volatile uint8_t*)device<>::adcsra) & (1<<ADIF);
-        }
+        bool read_ready() const;
 
         adc& operator= (auto_trigger_source source) {
             if (source != auto_trigger_source::disabled) {
@@ -178,14 +173,8 @@ namespace machew {
         }
 
         adc& operator= (power::state state) {
-            register_write_back<uint8_t, device<>::adcsra> reg;
-            reg &= ~(1<<ADIF);  // Need to clear the interrupt flag bit so we don't
-                                // accidentally clear the interrupt
-            if (state == power::state::enabled) {
-                reg |= (1<<ADEN);
-            } else if (state == power::state::disabled) {
-                reg &= ~(1<<ADEN);
-            }
+            device<>::adcsra_t adcsra;
+            adcsra = state;
             return *this;
         }
 
@@ -226,4 +215,47 @@ namespace machew {
             return *this;
         }
     };
-};
+
+    struct device<>::adcsra_t {
+        void start() const {
+            register_write_back<uint8_t, device<>::adcsra> reg;
+            reg &= ~(1<<ADIF);
+            reg |= (1<<ADSC);
+        }
+
+        bool read_ready() const {
+            return *((volatile uint8_t*)device<>::adcsra) & (1<<ADIF);
+        }
+
+        adcsra_t& operator= (power::state state) {
+            register_write_back<uint8_t, device<>::adcsra> reg;
+
+            reg &= ~(1<<ADIF);  // Need to clear the interrupt flag bit so we don't
+                                // accidentally clear the interrupt
+            if (state == power::state::enabled) {
+                reg |= (1<<ADEN);
+            } else if (state == power::state::disabled) {
+                reg &= static_cast<uint8_t>(~(1<<ADEN));
+            }
+            return *this;
+        }
+    };
+
+    struct device<>::adcsrb_t {
+    };
+
+    struct device<>::admux_t {
+    };
+
+    template<device<>::precision_mode _precision_mode>
+    inline void adc<_precision_mode>::start() const {
+        device<>::adcsra_t adcsra;
+        adcsra.start();
+    }
+
+    template<device<>::precision_mode _precision_mode>
+    inline bool adc<_precision_mode>::read_ready() const {
+        device<>::adcsra_t adcsra;
+        return adcsra.read_ready();
+    }
+}
