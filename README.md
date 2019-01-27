@@ -1,31 +1,47 @@
 # machew
-Basic Arduino functions implemented efficiently
+Previously the intent of this library was to implement Arduino functions
+efficiently in C++ templates.  That was three years ago and since then I've
+decided I don't want to quite do that.  There may be a Arduino compatibility
+layer at some point in the future, (don't hold your breath).  The intent now
+is to create a high level AVR library using C++ templates that compile down
+to assembly that is as fast as one could write using straight C and a lot of
+bit twiddling.
 
-Most of the time (at least in my sketches) the pins are known at compile time.
-Pin values rarely change during the progress of the program as they are 
-physically connected to the device and are either input, output or input_pullup 
-by design.  As currently implemented many of the Arduino functions require
-large lookup tables to determine pin data at runtime.  These lookup tables burn
-a lot of unnecessary program space.  The machew library implements basic
-Arduino language functions so that when pins are known at compile time the
-compiler can reduce as much instruction bloat as possible resulting in smaller
-programs.  The primary method of implementing this is utilizing C++ templates
-specifically features from the C++11 standard.
+## Supported Devices (or to support soon):
+* [ATTiny26](http://ww1.microchip.com/downloads/en/DeviceDoc/doc1477.pdf)
+* [ATTiny28](http://ww1.microchip.com/downloads/en/DeviceDoc/doc1062.pdf)
+* [ATMega328P](http://ww1.microchip.com/downloads/en/DeviceDoc/ATmega328_P%20AVR%20MCU%20with%20picoPower%20Technology%20Data%20Sheet%2040001984A.pdf)
+* [ATMega640](http://ww1.microchip.com/downloads/en/DeviceDoc/Atmel-2549-8-bit-AVR-Microcontroller-ATmega640-1280-1281-2560-2561_datasheet.pdf)
+* [ATMega1280](http://ww1.microchip.com/downloads/en/DeviceDoc/Atmel-2549-8-bit-AVR-Microcontroller-ATmega640-1280-1281-2560-2561_datasheet.pdf)
+* [ATMega1281](http://ww1.microchip.com/downloads/en/DeviceDoc/Atmel-2549-8-bit-AVR-Microcontroller-ATmega640-1280-1281-2560-2561_datasheet.pdf)
+* [ATMega2560](http://ww1.microchip.com/downloads/en/DeviceDoc/Atmel-2549-8-bit-AVR-Microcontroller-ATmega640-1280-1281-2560-2561_datasheet.pdf)
+* [ATMega2561](http://ww1.microchip.com/downloads/en/DeviceDoc/Atmel-2549-8-bit-AVR-Microcontroller-ATmega640-1280-1281-2560-2561_datasheet.pdf)
 
-Supported Devices:
-* ATMega1280
+I don't own development boards for each of those platforms, so support will
+be on a best effort basis mostly using [simulavr](https://www.nongnu.org/simulavr/)
 
-I would like to support as many different devices as possible, but for the
-forseable future I not be purchasing any other Arduinos other then the 
-ATMega328P and the ATMega1280 I currently own.
+If I can successfully impemlent support for those 4 different platforms then chances
+are pretty good that generalizing support to any other AVR microcontroller shouldn't
+be to difficult.
 
-Implemented Functions:
-* digitalWrite
-* digitalRead
-* pinMode
-* analogRead
-* analogWrite
+The code will be C++17 which means running it in Arduino will only work by updating
+the compiler to a more recent version.  Details on how to do that can be found
+at [Zakk Emble's Website](http://blog.zakkemble.net/avr-gcc-builds/).
 
-I would like to support advanced I/O functions as well as libraries that depend
-on these functions.
+Support for the C++ stdlib will be from my fork of [StandardCplusplus](https://github.com/e2thenegpii/StandardCplusplus)
 
+## Todo:
+1. Add tuple support to StandardCplusplus
+1. Implement assignment for various interfaces that accept a tuple to preform a as few register writes as possible
+1. Implement each of the register types
+1. Expand support to the ATmega640+
+1. Expand support to the ATTiny28
+1. Expand support to the ATTiny26
+1. Use CMake to avoid manually setting up tools
+
+## To Use:
+Use CMake
+
+```
+git clone git@github.com:e2thenegpii/machew.git
+cmake -build-toolchain=ON .
