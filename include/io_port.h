@@ -93,18 +93,6 @@ namespace machew {
         }
 
     private:
-        /**
-         * From a collection of pins generate the relevant mask
-         */
-        template<uint8_t... _pins>
-        static constexpr uint8_t get_pin_mask() {
-                
-            uint8_t tmp = 0;
-            for( const auto & x : {1<<_pins...}) {
-                tmp |= x;
-            }
-            return tmp;
-        }
 
         /**
          * Preforms a common operation on a group of pins
@@ -113,7 +101,7 @@ namespace machew {
         struct pin_group {
 
             const pin_group& operator= (const interrupt::state& state) const {
-                constexpr uint8_t x = get_pin_mask<pins...>();
+                constexpr uint8_t x = bit_value<pins...>();
 
                 register_write_back<uint8_t, device<>::get_pcmsk_reg<_port>()> reg;
                 if (state == interrupt::state::enabled) {
@@ -129,7 +117,7 @@ namespace machew {
              * Set the mode for a given group of pins
              */
             inline const pin_group& operator= (const pin_mode& mode) const {
-                constexpr uint8_t x = get_pin_mask<pins...>();
+                constexpr uint8_t x = bit_value<pins...>();
 
                 // the if constexpr exists to avoid an unnecessary read
                 // if we are writing to all the bits because all the registers
@@ -165,7 +153,7 @@ namespace machew {
              * Set the pin state for a given group of pins
              */
             [[gnu::always_inline]] inline const pin_group& operator= (const pin_state& state) const {
-                constexpr uint8_t x = get_pin_mask<pins...>();
+                constexpr uint8_t x = bit_value<pins...>();
 
                 if(state == pin_state::low) {
                     if constexpr(x != 0xff) {
@@ -199,7 +187,7 @@ namespace machew {
             }
 
             operator uint8_t() const { 
-                constexpr uint8_t x = get_pin_mask<pins...>();
+                constexpr uint8_t x = bit_value<pins...>();
                 return *((volatile uint8_t*)device<>::get_port_reg<_port>()) & x;
             }
         };

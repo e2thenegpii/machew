@@ -1,5 +1,6 @@
 #pragma once
 #include <stdint.h>
+#include <initializer_list>
 
 namespace machew {
     enum class supported_device {
@@ -8,8 +9,19 @@ namespace machew {
 
     template<bool> struct wrap;
 
-    template<typename T, uint8_t shift> constexpr T bit_value() { return T{T{1}<<shift}; }
-    template<typename T, uint8_t shift> constexpr T ibit_value() { return T{~bit_value<shift, T>()}; }
+    /**
+     * From a collection of pins generate the relevant mask
+     */
+    template<typename T, uint8_t... shifts>
+    constexpr T bit_value() {
+        T tmp{0};
+        for( const auto & x : {T{1}<<shifts...}) {
+            tmp |= x;
+        }
+        return tmp;
+    }
+
+    template<typename T, uint8_t... shifts> constexpr T ibit_value() { return (T)(~bit_value<T, shifts...>()); }
 
     template<supported_device d=supported_device::__AVR_DEVICE_NAME__> struct device;
     template<typename T, typename return_t> constexpr return_t get_registers(const T&);
