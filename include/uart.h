@@ -143,4 +143,14 @@ namespace machew {
             }
         };
     };
+
+    struct device<>::ucsra_t {
+    };
+
+    struct device<>::ucsrb_t {
+        
+    };
+
+    struct device<>::ucsrc_t {
+    };
 }

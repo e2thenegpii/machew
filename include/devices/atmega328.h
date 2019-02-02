@@ -128,6 +128,12 @@ namespace machew {
         struct admux_t;
         struct adcsra_t;
         struct adcsrb_t;
+        struct ucsra_t;
+        struct ucsrb_t;
+        struct ucsrc_t;
+        struct ubrr_t;
+        struct udr_t;
+        struct eecr_t;
     };
 
     using port = device<>::port;    
