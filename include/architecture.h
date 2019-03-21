@@ -7,8 +7,6 @@ namespace machew {
         atmega328
     };
 
-    template<bool> struct wrap;
-
     /**
      * From a collection of pins generate the relevant mask
      */
@@ -24,7 +22,6 @@ namespace machew {
     template<typename T, uint8_t... shifts> constexpr T ibit_value() { return (T)(~bit_value<T, shifts...>()); }
 
     template<supported_device d=supported_device::__AVR_DEVICE_NAME__> struct device;
-    template<typename T, typename return_t> constexpr return_t get_registers(const T&);
 
     template<typename T, uintptr_t _addr>
     struct register_t {

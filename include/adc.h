@@ -5,7 +5,7 @@
 #include "interrupts.h"
 #include "power.h"
 #include "register_write_back.h"
-
+/*
 namespace machew {
     enum class adc_prescaler_mode : uint8_t {
         div2,
@@ -120,7 +120,7 @@ namespace machew {
 
         adc& operator= (adc_auto_trigger_source source) {
             if (source != adc_auto_trigger_source::disabled) {
-                register_write_back<uint8_t, device<>::adcsrb> reg;
+                register_write_back<decltype(device<>::adcsrb)> reg;
 
                 switch(source) {
                 case adc_auto_trigger_source::free_running:
@@ -157,11 +157,11 @@ namespace machew {
             }
 
             if (source != adc_auto_trigger_source::disabled) { // repeat conditional to save charge to stack space
-                register_write_back<uint8_t, device<>::adcsra> reg;
+                register_write_back<decltype(device<>::adcsra)> reg;
                 reg &= ~(1<<ADIF); // Don't erase the interrupt flag by writing one
                 reg |= (1<<ADATE);
             } else {
-                register_write_back<uint8_t, device<>::adcsra> reg;
+                register_write_back<decltype(device<>::adcsra)> reg;
                 reg &= ~((1<<ADATE)|(1<<ADIF));
             }
 
@@ -175,7 +175,7 @@ namespace machew {
         }
 
         adc& operator= (interrupt::state state) {
-            register_write_back<uint8_t, device<>::adcsra> reg;
+            register_write_back<decltype(device<>::adcsra)> reg;
             reg &= ~(1<<ADIF);  // Need to clear the interrupt flag bit so we don't
                                 // accidentally clear the interrupt
             if (state == interrupt::state::enabled) {
@@ -211,7 +211,7 @@ namespace machew {
 
     struct device<>::adcsra_t {
         void start() const {
-            register_write_back<uint8_t, device<>::adcsra> reg;
+            register_write_back<decltype(device<>::adcsra)> reg;
             reg &= ~(1<<ADIF);
             reg |= (1<<ADSC);
         }
@@ -221,7 +221,7 @@ namespace machew {
         }
 
         adcsra_t& operator= (power::state state) {
-            register_write_back<uint8_t, device<>::adcsra> reg;
+            register_write_back<decltype(device<>::adcsra)> reg;
 
             reg &= ~(1<<ADIF);  // Need to clear the interrupt flag bit so we don't
                                 // accidentally clear the interrupt
@@ -234,7 +234,7 @@ namespace machew {
         }
 
         adcsra_t& operator= (const adc_prescaler_mode& mode) {
-            register_write_back<uint8_t, device<>::adcsra> reg;
+            register_write_back<decltype(device<>::adcsra)> reg;
 
             reg &= ~(1<<ADIF);
 
@@ -264,7 +264,7 @@ namespace machew {
 
     struct device<>::adcsrb_t {
         adcsrb_t& operator= (const adc_auto_trigger_source& source) {
-            register_write_back<uint8_t, device<>::adcsrb> reg;
+            register_write_back<decltype(device<>::adcsrb)> reg;
 
             if (source == adc_auto_trigger_source::disabled) {
             } else if (source == adc_auto_trigger_source::free_running) {
@@ -297,7 +297,7 @@ namespace machew {
 
     struct device<>::admux_t {
         admux_t& operator= (const adc_voltage_reference& ref) {
-            register_write_back<uint8_t, device<>::admux> reg;
+            register_write_back<decltype(device<>::admux)> reg;
 
             if (ref == adc_voltage_reference::AREF) {
                 reg &= ibit_value<uint8_t, REFS1, REFS0>();
@@ -312,7 +312,7 @@ namespace machew {
         }
 
         admux_t& operator= (const adc_input_channel& channel) {
-            register_write_back<uint8_t, device<>::admux> reg;
+            register_write_back<decltype(device<>::admux)> reg;
 
             if (channel == adc_input_channel::ADC0) {
                 reg &= ~((1<<MUX3)|(1<<MUX2)|(1<<MUX1)|(1<<MUX0));
@@ -351,7 +351,7 @@ namespace machew {
         }
 
         admux_t& operator= (const adc_alignment& align) {
-            register_write_back<uint8_t, device<>::admux> reg;
+            register_write_back<decltype(device<>::admux)> reg;
             if (align == adc_alignment::left) {
                 reg |= bit_value<uint8_t, ADLAR>();
             } else if (align == adc_alignment::right) {
@@ -374,3 +374,4 @@ namespace machew {
         return adcsra.read_ready();
     }
 }
+*/

@@ -19,7 +19,7 @@ namespace machew {
         template<component c> class channel;
 
         usart& operator= (const power::state & state) {
-            register_write_back<uint8_t, device<>::get_controlb_reg<u>()> reg;
+            register_write_back<decltype(device<>::get_controlb_reg<u>())> reg;
             if (state == power::state::enabled) {
                 reg |= (1<<TXEN0)|(1<<RXEN0);
             } else if (state == power::state::disabled) {
@@ -30,7 +30,7 @@ namespace machew {
         }
 
         usart& operator= (const interrupt::state& state) {
-            register_write_back<uint8_t, device<>::get_controlb_reg<u>()> reg;
+            register_write_back<decltype(device<>::get_controlb_reg<u>())> reg;
             if (state == interrupt::state::enabled) {
                 reg |= (1<<TXCIE0)|(1<<RXCIE0);
             } else if (state == interrupt::state::disabled) {
@@ -41,7 +41,7 @@ namespace machew {
         }
 
         static void config_bitwidth_c() {
-            register_write_back<uint8_t, device<>::get_controlc_reg<u>()> reg;
+            register_write_back<decltype(device<>::get_controlc_reg<u>())> reg;
             switch(bits) {
             case 5:
                 reg &= ~((1<<UCSZ00)|(1<<UCSZ01));
@@ -62,7 +62,7 @@ namespace machew {
         }
 
         static void config_bitwidth_b() {
-            register_write_back<uint8_t, device<>::get_controlb_reg<u>()> reg;
+            register_write_back<decltype(device<>::get_controlb_reg<u>())> reg;
             if constexpr (bits == 9) {
                 reg |= (1<<UCSZ02);
             } else {
@@ -103,7 +103,7 @@ namespace machew {
         template<component c>
         class channel {
             channel& operator= (const power::state & state) {
-                register_write_back<uint8_t, device<>::get_controlb_reg<u>()> reg;
+                register_write_back<decltype(device<>::get_controlb_reg<u>())> reg;
                 if constexpr(c == component::tx) {
                     if (state == power::state::enabled) {
                         reg |= (1<<TXEN0);
@@ -123,7 +123,7 @@ namespace machew {
             }
 
             channel& operator= (const interrupt::state& state) {
-                register_write_back<uint8_t, device<>::get_controlb_reg<u>()> reg;
+                register_write_back<decltype(device<>::get_controlb_reg<u>())> reg;
                 if constexpr(c == component::tx) {
                     if (state == interrupt::state::enabled) {
                         reg |= (1<<TXCIE0);
@@ -143,7 +143,7 @@ namespace machew {
             }
         };
     };
-
+/*
     struct device<>::ucsra_t {
     };
 
@@ -152,5 +152,5 @@ namespace machew {
     };
 
     struct device<>::ucsrc_t {
-    };
+    };*/
 }

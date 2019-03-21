@@ -5,7 +5,7 @@
 #include "interrupts.h"
 #include "power.h"
 #include "register_write_back.h"
-
+/*
 namespace machew {
 
     class eeprom {
@@ -28,7 +28,7 @@ namespace machew {
         }
 
         eeprom& operator=(address addr) {
-            register_write_back<address, device<>::eear> reg(addr);
+            register_write_back<decltype(device<>::eear)> reg(addr);
             return *this;
         }
 
@@ -58,7 +58,7 @@ namespace machew {
 
     struct eecr_t {
         eecr_t& operator= (const interrupt::state& state ) {
-            register_write_back<uint8_t, device<>::eecr> reg;
+            register_write_back<decltype(device<>::eecr)> reg;
             if (state == interrupt::state::enabled) {
                 reg |= (1<<EERIE);
             } else if (state == interrupt::state::disabled) {
@@ -68,7 +68,7 @@ namespace machew {
         }
 
         eecr_t& operator= (const eeprom::mode& mode) {
-            register_write_back<uint8_t, device<>::eecr> reg;
+            register_write_back<decltype(device<>::eecr)> reg;
             if (mode == eeprom::mode::erase_write) {
                 reg &= ~((1<<EEPM1)|(1<<EEPM0));
             } else if (mode == eeprom::mode::erase) {
@@ -82,7 +82,7 @@ namespace machew {
         }        
 
         void start_read() {
-            register_write_back<uint8_t, device<>::eecr> reg;
+            register_write_back<decltype(device<>::eecr)> reg;
             reg |= (1<<EERE);
         }
 
@@ -103,7 +103,7 @@ namespace machew {
     void eeprom::write_async(uint8_t data) {
         {   // Scope the write_back to ensure it is written before
             // clearing interrupts
-            register_write_back<uint8_t, device<>::eedr> reg(data);
+            register_write_back<decltype(device<>::eedr)> reg(data);
         }
         eecr_t eecr;
         uint8_t tmp = SREG;
@@ -131,3 +131,4 @@ namespace machew {
         return *this;
     }
 }
+*/

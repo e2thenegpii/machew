@@ -7,15 +7,11 @@
 #include "power.h"
 
 namespace {
-    machew::adc<> adc;
-    //machew::adc<machew::precision_mode::low> adclow;
 }
 
 int main() {
-    adc = machew::power::state::enabled;
-    adc = machew::interrupt::state::disabled;
-    adc.start();
-    while(!adc.read_ready());
+    machew::pcicr_write_back<machew::device<>::port::B, machew::device<>::port::C> reg;
+    reg = machew::interrupt::state::enabled;
     
     return 0;
 }

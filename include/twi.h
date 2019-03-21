@@ -18,15 +18,15 @@ namespace machew {
 
         twi& operator= (const prescaler& scale) {
 
-            register_write_back<uint8_t, device<>::twsr> reg;
+            register_write_back<decltype(device<>::twsr)> reg;
             if (scale == prescaler::div1) {
-                reg &= ~((1<<TWPS1)|(1<<TWPS0));
+                reg &= ibit_value<uint8_t, TWPS1, TWPS0>();
             } else if (scale == prescaler::div4) {
-                reg &= ~(1<<TWPS1);
+                reg &= ibit_value<uint8_t, TWPS1>();
                 reg |= (1<<TWPS0);
             } else if (scale == prescaler::div16) {
                 reg |= (1<<TWPS1);
-                reg &= ~(1<<TWPS0);
+                reg &= ibit_value<uint8_t, TWPS0>();
             } else if (scale == prescaler::div64) {
                 reg |= (1<<TWPS1)|(1<<TWPS0);
             }
@@ -36,11 +36,11 @@ namespace machew {
 
         twi& operator= (const interrupt::state& state) {
 
-            register_write_back<uint8_t, device<>::twcr> reg;
+            register_write_back<decltype(device<>::twcr)> reg;
             if (state == interrupt::state::enabled) {
                 reg |= (1<<TWIE);
             } else if (state == interrupt::state::disabled) {
-                reg &= ~(1<<TWIE);
+                reg &= ibit_value<uint8_t, TWIE>();
             }
 
             return *this;
@@ -48,11 +48,11 @@ namespace machew {
 
         twi& operator= (const power::state& state) {
 
-            register_write_back<uint8_t, device<>::twcr> reg;
+            register_write_back<decltype(device<>::twcr)> reg;
             if (state == power::state::enabled) {
                 reg |= (1<<TWEN);
             } else if (state == power::state::disabled) {
-                reg &= ~(1<<TWEN);
+                reg &= ibit_value<uint8_t, TWEN>();
             }
 
             return *this;
@@ -63,12 +63,12 @@ namespace machew {
         }
 
         twi& operator= (uint8_t data) {
-            register_write_back<uint8_t, device<>::twdr> reg(data);
+            register_write_back<decltype(device<>::twdr)> reg(data);
             return *this;
         }
 
         twi& operator= (const address& addr) {
-            register_write_back<uint8_t, device<>::twar> reg(addr);
+            register_write_back<decltype(device<>::twar)> reg(addr);
             return *this;
         }
 

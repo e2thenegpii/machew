@@ -51,7 +51,6 @@ namespace machew {
          * Sets the mode for all pins in the port
          */
         io_port& operator= (const pin_mode& mode) {
-
             this->pins<0,1,2,3,4,5,6,7>() = mode;
             return *this;
         }
@@ -60,19 +59,18 @@ namespace machew {
          * Sets the state for all pins in the port
          */
         io_port& operator= (const pin_state& state) {
-
             this->pins<0,1,2,3,4,5,6,7>() = state;
             return *this;
         }
 
         io_port& operator= (const interrupt::state& state) {
-            device<>::pcicr_t<_port> pcicr;
+            pcicr_write_back<_port> pcicr;
             pcicr = state;
             return *this;
         }
 
         void clear_interrupt() const {
-            device<>::pcifr_t<_port> pcifr;
+            pcifr_write_back<_port> pcifr;
             pcifr.clear_interrupt();
         }
 
@@ -80,7 +78,6 @@ namespace machew {
          * Sets the state for all pins in the port
          */
         io_port& operator= (const uint8_t& data) {
-
             this->pins<0,1,2,3,4,5,6,7>() = data;
             return *this;
         }
@@ -103,7 +100,7 @@ namespace machew {
             const pin_group& operator= (const interrupt::state& state) const {
                 constexpr uint8_t x = bit_value<pins...>();
 
-                register_write_back<uint8_t, device<>::get_pcmsk_reg<_port>()> reg;
+                register_write_back<decltype(device<>::get_pcmsk_reg<_port>())> reg;
                 if (state == interrupt::state::enabled) {
                     reg |= x;
                 } else if (state == interrupt::state::disabled) {
@@ -124,25 +121,25 @@ namespace machew {
                 // are volatile 
                 if (mode == pin_mode::input) {
                     if constexpr(x != 0xff) {
-                        register_write_back<uint8_t, device<>::get_ddr_reg<_port>()> reg;
+                        register_write_back<decltype(device<>::get_ddr_reg<_port>())> reg;
                         reg &= ~x;
                     } else {
-                        register_write_back<uint8_t, device<>::get_ddr_reg<_port>()> reg(0x00);
+                        register_write_back<decltype(device<>::get_ddr_reg<_port>())> reg(0x00);
                     }
                 } else if(mode == pin_mode::input_pullup) {
                     *this = pin_mode::input;
                     if constexpr(x != 0xff) {
-                        register_write_back<uint8_t, device<>::get_port_reg<_port>()> reg;
+                        register_write_back<decltype(device<>::get_port_reg<_port>())> reg;
                         reg |= x;
                     } else {
-                        register_write_back<uint8_t, device<>::get_port_reg<_port>()> reg(0xff);
+                        register_write_back<decltype(device<>::get_port_reg<_port>())> reg(0xff);
                     }
                 } else if(mode == pin_mode::output) {
                     if constexpr(x != 0xff) {
-                        register_write_back<uint8_t, device<>::get_ddr_reg<_port>()> reg;
+                        register_write_back<decltype(device<>::get_ddr_reg<_port>())> reg;
                         reg |= x;
                     } else {
-                        register_write_back<uint8_t, device<>::get_ddr_reg<_port>()> reg(0xff);
+                        register_write_back<decltype(device<>::get_ddr_reg<_port>())> reg(0xff);
                     }
                 }
 
@@ -157,24 +154,24 @@ namespace machew {
 
                 if(state == pin_state::low) {
                     if constexpr(x != 0xff) {
-                        register_write_back<uint8_t, device<>::get_port_reg<_port>()> reg;
+                        register_write_back<decltype(device<>::get_port_reg<_port>())> reg;
                         reg &= ~x;
                     } else {
-                        register_write_back<uint8_t, device<>::get_port_reg<_port>()> reg(0x00);
+                        register_write_back<decltype(device<>::get_port_reg<_port>())> reg(0x00);
                     }
                 } else if(state == pin_state::high) {
                     if constexpr(x != 0xff) {
-                        register_write_back<uint8_t, device<>::get_port_reg<_port>()> reg;
+                        register_write_back<decltype(device<>::get_port_reg<_port>())> reg;
                         reg |= x;
                     } else {
-                        register_write_back<uint8_t, device<>::get_port_reg<_port>()> reg(0xff);
+                        register_write_back<decltype(device<>::get_port_reg<_port>())> reg(0xff);
                     }
                 } else if(state == pin_state::toggle) {
                     if constexpr(x != 0xff) {
-                        register_write_back<uint8_t, device<>::get_pin_reg<_port>()> reg;
+                        register_write_back<decltype(device<>::get_pin_reg<_port>())> reg;
                         reg |= x;
                     } else {
-                        register_write_back<uint8_t, device<>::get_pin_reg<_port>()> reg(0xff);
+                        register_write_back<decltype(device<>::get_pin_reg<_port>())> reg(0xff);
                     }
                 }
 
@@ -182,7 +179,7 @@ namespace machew {
             }
 
             const pin_group& operator= (const uint8_t& data) const {
-                register_write_back<uint8_t, device<>::get_port_reg<_port>()> reg(data);
+                register_write_back<decltype(device<>::get_port_reg<_port>())> reg(data);
                 return *this;
             }
 
