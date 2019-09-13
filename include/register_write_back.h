@@ -83,9 +83,9 @@ namespace machew {
     class eifr_write_back : public register_write_back<decltype(device<>::eifr)> {
         void clear_interrupt() {
             for( const auto & p : {interrupts...}) {
-                if (p == external_interrupt::zero) {
+                if (p == device<>::external_interrupt::zero) {
                     *this |= bit_value<value_type, template_type::_INTF0>();
-                else if (p == external_interrupt::one) {
+                } else if (p == device<>::external_interrupt::one) {
                     *this |= bit_value<value_type, template_type::_INTF1>();
                 }
             }
@@ -96,13 +96,13 @@ namespace machew {
     class eimsk_write_back : public register_write_back<decltype(device<>::eimsk)> {
         eimsk_write_back& operator= (const interrupt::state& state) {
             for( const auto & p : {interrupts...} ) {
-                if (p == external_interrupt::zero) {
+                if (p == device<>::external_interrupt::zero) {
                     if (state == interrupt::state::enabled) {
                         *this |= bit_value<value_type, template_type::_INT0>();
                     } else if (state == interrupt::state::disabled) {
                         *this &= ibit_value<value_type, template_type::_INT0>();
                     }
-                } else if (p == external_interrupt::one) {
+                } else if (p == device<>::external_interrupt::one) {
                     if (state == interrupt::state::enabled) {
                         *this |= bit_value<value_type, template_type::_INT1>();
                     } else if (state == interrupt::state::disabled) {
